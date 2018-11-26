@@ -7,7 +7,8 @@ use IEEE.numerid_std.all;
 entity alu is
   port(
 --  data inputs:
-    in1, in2, in3, imm : in std_logic_vector(4 downto 0);
+    in1, in2, in3 : in std_logic_vector(4 downto 0);
+    imm : in std_logic_vector(15 downto 0);
     
 --  control inputs:
     opcode : in std_logic_vector(3 downto 0); //xxx0000, xxx0001, xxx0010, etc
