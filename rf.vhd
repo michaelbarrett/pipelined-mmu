@@ -8,24 +8,25 @@ entity rf is
   port(
     -- inputs
     clock : in std_logic;
-    register_write : in std_logic;
-    r_addr1 : in std_logic_vector;
-    r_addr2 : in std_logic_vector;
-    r_addr3 : in std_logic_vector;
-    w_addr : in std_logic_vector;
-    w_data_in : in std_logic_vector;
+    register_write : in std_logic; -- 1 = writing to Reg{w_addr1}, 0 = not writing
+    r_addr1 : in std_logic_vector(4 downto 0); -- 32 registers, so 5 bits addr
+    r_addr2 : in std_logic_vector(4 downto 0);
+    r_addr3 : in std_logic_vector(4 downto 0);
+    w_addr1 : in std_logic_vector(4 downto 0);
+    w_data_in1 : in std_logic_vector(127 downto 0); -- 128 bits in reg
     -- outputs
-    r_out1 : out std_logic_vector;
-    r_out2 : out std_logic_vector;
-    r_out3 : out std_logic_vector;
+    r_data_out1 : out std_logic_vector(127 downto 0); -- 128 bits in reg
+    r_data_out2 : out std_logic_vector(127 downto 0);
+    r_data_out3 : out std_logic_vector(127 downto 0);
     );
 end entity;
 
 architecture rtl of rf is
 
-  type data_type is array (0 to 31) of std_logic_vector(w_data_in'range);
+  -- array holds 32 128-bit registers -- 0 to 31 is (0 to (2**address'length)-1)
+  type data_type is array (0 to 31) of std_logic_vector(127 downto 0);
   signal data : data_type;
-  signal read_address : std_logic_vector(r_addr1'range);
+  signal read_address : std_logic_vector(4 downto 0);
 
 begin
 
@@ -34,7 +35,7 @@ begin
   begin
     if rising_edge(clock) then
       if register_write = '1' then
-        data(to_integer(unsigned(w_addr))) <= datain;
+        data(to_integer(unsigned(w_addr1))) <= w_data_in1;
       end if;
       read_address1 <= r_addr1;
       read_address2 <= r_addr2;
@@ -42,8 +43,8 @@ begin
     end if;
   end process RfProc;
 
-  r_out1 <= data(to_integer(unsigned(read_address1)));
-  r_out2 <= data(to_integer(unsigned(read_address2)));
-  r_out3 <= data(to_integer(unsigned(read_address3)));
+  r_data_out1 <= data(to_integer(unsigned(read_address1)));
+  r_data_out2 <= data(to_integer(unsigned(read_address2)));
+  r_data_out3 <= data(to_integer(unsigned(read_address3)));
 
 end architecture rtl;
