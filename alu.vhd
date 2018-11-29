@@ -106,7 +106,9 @@ architecture behavioral of alu is
           variable s1_f4 : signed(31 downto 0);
           s1_f4 := rs1(127 downto 96) + res4;
           
-          -- output to res to save in rd
+          -- output to res
+
+          res <= s1_f1 & s1_f2 & s1_f3 & s1_f4;
           
         elsif mah = '1' then
             

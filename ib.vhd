@@ -9,8 +9,7 @@ use IEEE.numeric_std.all;
 entity ib is
   port(
     -- inputs
-    clock : in std_logic;
-    load_mode : in std_logic; -- 1 = loading data array, 0 = reading from instr_out
+    load_mode : in std_logic; -- 0 = loading data array, 1 = reading from instr_out
     program_counter : in std_logic_vector(4 downto 0); -- 32 instrs, so 5 bits addr
     data_in : in array (0 to 31) of std_logic_vector(24 downto 0); -- data input
     -- outputs
@@ -31,15 +30,15 @@ architecture rtl of ib is
     IbProc : process(clock) is
 
     begin
-      if rising_edge(clock) then -- on every clock edge, read out to outp
-        if load_mode = '1' then
-          data <= data_in;
-        else
-          read_address <= program_counter;
-        end if;
+      if load_mode = '0' then
+        data <= data_in;
       end if;
-  instr_out <= data(to_integer(unsigned(read_address)));
+      read_address <= program_counter;
 
-end architecture rtl;
+      instr_out <= data(to_integer(unsigned(read_address)));
+
+    end process IBProc;
+
+  end architecture rtl;
 
     

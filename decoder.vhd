@@ -92,7 +92,7 @@ begin
       rs1_addr <= "ZZZZZ";
       rs2_addr <= "ZZZZZ";
       rs1_addr <= "ZZZZZ";
-      opcode_for_r3 <= "ZZZZZZZZ";      
+      opcode_for_r3 <= "ZZZZZZZZ"; 
     -- for ma/ms/l/h
     elsif (instr_num >= 2 and instr_num <= 5) then
       li_for_li <= instr(23 downto 21);
