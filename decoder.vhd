@@ -10,114 +10,105 @@ entity decoder is
     -- data inputs:
     instr : in std_logic_vector(24 downto 0); -- an instruction
     -- data control outputs (TO ALU):
-    li : out std_logic;
-    mal, mah, msl, msh : out std_logic;
-    nop, bcw, and_instr, or_instr, popcnth, clz, rot, shlhi, a, sfw, ah, sfh, ahs, sfhs, mpyu, absdb : out std_logic;
+    -- 0 nop, 1 li, 2 3 4 5 mal mah msl msh, 6 bcw, 7 and, 8 or, 9 popcnth, 10 clz,
+    -- 11 rot, 12 shlhi, 13 a, 14 sfw, 15 ah, 16 sfh, 17 ahs, 18 sfhs, 19 mpyu, 20 absdb
+    instr_num_out : out signed(5 downto 0); -- contains 0-19
     -- data instruction outputs (TO RF):
     -- for li
     li_for_li : out std_logic_vector(2 downto 0);
     imm_for_li : out std_logic_vector(15 downto 0);
-    rd_for_li : out std_logic_vector(4 downto 0);
     -- for ma/ms/l/h
-    rs3_for_m : out std_logic_vector(4 downto 0);
-    rs2_for_m : out std_logic_vector(4 downto 0);
-    rs1_for_m : out std_logic_vector(4 downto 0);
-    rd_for_m : out std_logic_vector(4 downto 0);
+    rs3_addr : out std_logic_vector(4 downto 0);
+    rs2_addr : out std_logic_vector(4 downto 0);
+    rs1_addr : out std_logic_vector(4 downto 0);
+    rd_addr : out std_logic_vector(4 downto 0);
     -- for r3 format
     opcode_for_r3 : out std_logic_vector(7 downto 0);
-    rs2_for_r3 : out std_logic_vector(4 downto 0);
-    rs1_for_r3 : out std_logic_vector(4 downto 0);
-    rd_for_r3 : out std_logic_vector(4 downto 0);
     );
 end entity;
 
 architecture conversion of decoder is
 
 begin
+  instr_num : signal signed(5 downto 0);
 
   DecProc : process(opcode) is
 
   begin
 
-    li <= '0'; -- init all oups to zero
-    mal <= '0';
-    mah <= '0';
-    msl <= '0';
-    msh <= '0';
-    nop <= '0';
-    bcw <= '0';
-    and_instr <= '0';
-    or_instr <= '0';
-    popcnth <= '0';
-    clz <= '0';
-    rot <= '0';
-    shlhi <= '0';
-    a <= '0';
-    sfw <= '0';
-    ah <= '0';
-    sfh <= '0';
-    ahs <= '0';
-    sfhs <= '0';
-    mpyu <= '0';
-    absdb <= '0';
+    instr_num <= 0; -- init instr output to zero
 
     if instr(24) = '0' then -- if statement: sets one of the oups to 1 to signify the instruction
-      li <= '1';
+      instr_num <= 1;
     elsif (instr(23) = '0' and instr(21) = '0' and instr(20) = '0') then
-      mal <= '1';
+      instr_num <= 2;
     elsif (instr(23) = '0' and instr(21) = '0' and instr(20) = '1') then
-      mah <= '1';
+      instr_num <= 3;
     elsif (instr(23) = '0' and instr(21) = '1' and instr(20) = '0') then
-      msl <= '1';
+      instr_num <= 4;
     elsif (instr(23) = '0' and instr(21) = '1' and instr(20) = '1') then
-      msh <= '1';
+      instr_num <= 5;
     elsif (instr(18) = '0' and instr(17) = '0' and instr(16) = '0' and instr(15) = '0') then
-      nop <= '1'; 
-    elsif (instr(18) = '0' and instr(17) = '0' and instr(17) = '0' and instr(15) = '1') then
-      bcw <= '1';
+      instr_num <= 0;
+    elsif (instr(18) = '0' and instr(17) = '0' and instr(16) = '0' and instr(15) = '1') then
+      instr_num <= 6;
     elsif (instr(18) = '0' and instr(17) = '0' and instr(16) = '1' and instr(15) = '0') then
-      and_instr <= '1'; 
-    elsif (instr(18) = '0' and instr(17) = '0' and instr(17) = '1' and instr(15) = '1') then
-      or_instr <= '1';
+      instr_num <= 7;      
+    elsif (instr(18) = '0' and instr(17) = '0' and instr(16) = '1' and instr(15) = '1') then
+      instr_num <= 8;      
     elsif (instr(18) = '0' and instr(17) = '1' and instr(16) = '0' and instr(15) = '0') then
-      popcnth <= '1'; 
-    elsif (instr(18) = '0' and instr(17) = '1' and instr(17) = '0' and instr(15) = '1') then
-      clz <= '1';
+      instr_num <= 9;      
+    elsif (instr(18) = '0' and instr(17) = '1' and instr(16) = '0' and instr(15) = '1') then
+      instr_num <= 10;      
     elsif (instr(18) = '0' and instr(17) = '1' and instr(16) = '1' and instr(15) = '0') then
-      rot <= '1'; 
-    elsif (instr(18) = '0' and instr(17) = '1' and instr(17) = '1' and instr(15) = '1') then
-      shlhi <= '1';
+      instr_num <= 11;      
+    elsif (instr(18) = '0' and instr(17) = '1' and instr(16) = '1' and instr(15) = '1') then
+      instr_num <= 12;      
     elsif (instr(18) = '1' and instr(17) = '0' and instr(16) = '0' and instr(15) = '0') then
-      a <= '1'; 
-    elsif (instr(18) = '1' and instr(17) = '0' and instr(17) = '0' and instr(15) = '1') then
-      sfw <= '1';
+      instr_num <= 13;      
+    elsif (instr(18) = '1' and instr(17) = '0' and instr(16) = '0' and instr(15) = '1') then
+      instr_num <= 14;      
     elsif (instr(18) = '1' and instr(17) = '0' and instr(16) = '1' and instr(15) = '0') then
-      ah <= '1'; 
-    elsif (instr(18) = '1' and instr(17) = '0' and instr(17) = '1' and instr(15) = '1') then
-      sfh <= '1';
+      instr_num <= 15;      
+    elsif (instr(18) = '1' and instr(17) = '0' and instr(16) = '1' and instr(15) = '1') then
+      instr_num <= 16;      
     elsif (instr(18) = '1' and instr(17) = '1' and instr(16) = '0' and instr(15) = '0') then
-      ahs <= '1'; 
-    elsif (instr(18) = '1' and instr(17) = '1' and instr(17) = '0' and instr(15) = '1') then
-      sfhs <= '1';
+      instr_num <= 17;      
+    elsif (instr(18) = '1' and instr(17) = '1' and instr(16) = '0' and instr(15) = '1') then
+      instr_num <= 18;      
     elsif (instr(18) = '1' and instr(17) = '1' and instr(16) = '1' and instr(15) = '0') then
-      mpyu <= '1'; 
-    elsif (instr(18) = '1' and instr(17) = '1' and instr(17) = '1' and instr(15) = '1') then
-      absdb <= '1';
+      instr_num <= 19;      
+    elsif (instr(18) = '1' and instr(17) = '1' and instr(16) = '1' and instr(15) = '1') then
+      instr_num <= 20;      
     end if;
 
-    li_for_li <= instr(23 downto 21);
-    imm_for_li <= instr(20 downto 5); 
-    rd_for_li <= instr(4 downto 0);
+    -- for li
+    if (instr_num = 1) then
+      li_for_li <= instr(23 downto 21);
+      imm_for_li <= instr(20 downto 5); 
+      rd_for_li <= instr(4 downto 0);
+      rs3_addr <= "00000";
+      rs2_addr <= "00000";
+      rs1_addr <= "00000";
+      rs2_addr <= "00000";
+      rs1_addr <= "00000";
     -- for ma/ms/l/h
-    rs3_for_m <= instr(19 downto 15);
-    rs2_for_m <= instr(14 downto 10);
-    rs1_for_m <= instr(9 downto 5);
-    rd_for_m <= instr(4 downto 0);
+    elsif (instr_num >= 2 and instr_num <= 5) then
+      li_for_li <= instr(23 downto 21);
+      rs3_addr <= instr(19 downto 15);
+      rs2_addr <= instr(14 downto 10);
+      rs1_addr <= instr(9 downto 5);
+      rd_addr <= instr(4 downto 0);
     -- for r3 format
-    opcode_for_r3 <= instr(22 downto 15);
-    rs2_for_r3 <= instr(14 downto 10);
-    rs1_for_r3 <= instr(9 downto 5);
-    rd_for_r3 <= instr(4 downto 0);
+    else
+      opcode_for_r3 <= instr(22 downto 15);
+      rs3_for_r3 <= "00000";
+      rs2_for_r3 <= instr(14 downto 10);
+      rs1_for_r3 <= instr(9 downto 5);
+      rd_for_r3 <= instr(4 downto 0);
+    end if;
+
+    instr_num_out <= instr_num;
 
   end process DecProc;
 
