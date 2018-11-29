@@ -9,10 +9,25 @@ entity decoder is
   port(
     -- data inputs:
     instr : in std_logic_vector(24 downto 0); -- an instruction
-    -- data outputs:
+    -- data control outputs:
     li : out std_logic;
     mal, mah, msl, msh : out std_logic;
     nop, bcw, and_instr, or_instr, popcnth, clz, rot, shlhi, a, sfw, ah, sfh, ahs, sfhs, mpyu, absdb : out std_logic;
+    -- data instruction outputs:
+    -- for li
+    li_for_li : out std_logic_vector(2 downto 0);
+    imm_for_li : out std_logic_vector(15 downto 0);
+    rd_for_li : out std_logic_vector(4 downto 0);
+    -- for ma/ms/l/h
+    rs3_for_m : out std_logic_vector(4 downto 0);
+    rs2_for_m : out std_logic_vector(4 downto 0);
+    rs1_for_m : out std_logic_vector(4 downto 0);
+    rd_for_m : out std_logic_vector(4 downto 0);
+    -- for r3 format
+    opcode_for_r3 : out std_logic_vector(7 downto 0);
+    rs2_for_r3 : out std_logic_vector(4 downto 0);
+    rs1_for_r3 : out std_logic_vector(4 downto 0);
+    rd_for_r3 : out std_logic_vector(4 downto 0);
     );
 end entity;
 
@@ -46,7 +61,7 @@ begin
     mpyu <= '0';
     absdb <= '0';
 
-    if instr(24) = '0' then
+    if instr(24) = '0' then -- if statement: sets one of the oups to 1 to signify the instruction
       li <= '1';
     elsif (instr(23) = '0' and instr(21) = '0' and instr(20) = '0') then
       mal <= '1';
@@ -89,5 +104,21 @@ begin
     elsif (instr(18) = '1' and instr(17) = '1' and instr(17) = '1' and instr(15) = '1') then
       absdb <= '1';
     end if;
+
+    li_for_li <= instr(23 downto 21);
+    imm_for_li <= instr(20 downto 5); 
+    rd_for_li <= instr(4 downto 0);
+    -- for ma/ms/l/h
+    rs3_for_m <= instr(19 downto 15);
+    rs2_for_m <= instr(14 downto 10);
+    rs1_for_m <= instr(9 downto 5);
+    rd_for_m <= instr(4 downto 0);
+    -- for r3 format
+    opcode_for_r3 <= instr(22 downto 15);
+    rs2_for_r3 <= instr(14 downto 10);
+    rs1_for_r3 <= instr(9 downto 5);
+    rd_for_r3 <= instr(4 downto 0);
+
+  end process DecProc;
 
 end architecture;

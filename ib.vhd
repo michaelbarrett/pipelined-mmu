@@ -23,6 +23,7 @@ architecture rtl of ib is
   -- array holds 32 25-bit instructions
   type data_type is array (0 to 31) of std_logic_vector(24 downto 0);
   signal data : data_type; -- stored data
+  data <= (0 => B"1010_1010_1010_1010_1010_1010", 1 => B"1010", 2 => B"0101", 3 => B"1100", 4 => B"0011", 5 => B"1110", 6 => B"0010");
   signal read_address : std_logic_vector(4 downto 0); -- 32 instrs
 
   begin
