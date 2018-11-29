@@ -9,6 +9,7 @@ entity rf is
     -- inputs
     clock : in std_logic;
     register_write : in std_logic; -- 1 = writing to Reg{w_addr1}, 0 = not writing
+    r_addr_rd_temp : in std_logic_vector(4 downto 0);
     r_addr1 : in std_logic_vector(4 downto 0); -- 32 registers, so 5 bits addr
     r_addr2 : in std_logic_vector(4 downto 0);
     r_addr3 : in std_logic_vector(4 downto 0);
@@ -26,6 +27,7 @@ architecture rtl of rf is
   -- array holds 32 128-bit registers -- 0 to 31 is (0 to (2**address'length)-1)
   type data_type is array (0 to 31) of std_logic_vector(127 downto 0);
   signal data : data_type;
+  signal rd_temp : std_logic_vector(4 downto 0);
   signal read_address : std_logic_vector(4 downto 0);
 
 begin
@@ -46,5 +48,7 @@ begin
   r_data_out1 <= data(to_integer(unsigned(read_address1)));
   r_data_out2 <= data(to_integer(unsigned(read_address2)));
   r_data_out3 <= data(to_integer(unsigned(read_address3)));
+
+  rd_temp <= r_addr_rd_temp;
 
 end architecture rtl;
