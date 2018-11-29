@@ -11,9 +11,7 @@ entity alu is
     imm : in std_logic_vector(15 downto 0);
     
 --  control inputs:
-    li : in std_logic;
-    mal, mah, msl, msh : in std_logic;
-    nop, bcw, and_instr, or_instr, popcnth, clz, rot, shlhi, a, sfw, ah, sfh, ahs, sfhs, mpyu, absdb : in std_logic;
+    instr_num : in unsigned(5 downto 0);
 
 --  data outputs:
     res : out std_logic_vector(127 downto 0);
@@ -33,7 +31,7 @@ architecture behavioral of alu is
 
       begin
 
-        if li = '1' then
+        if instr_num = 1 then -- li
           res <= imm;
         elsif mal = '1' then
           -- multiply low 16 bit fields of each 32-bit field of regs rs3 and rs2

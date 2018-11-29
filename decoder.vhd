@@ -12,7 +12,7 @@ entity decoder is
     -- data control outputs (TO ALU):
     -- 0 nop, 1 li, 2 3 4 5 mal mah msl msh, 6 bcw, 7 and, 8 or, 9 popcnth, 10 clz,
     -- 11 rot, 12 shlhi, 13 a, 14 sfw, 15 ah, 16 sfh, 17 ahs, 18 sfhs, 19 mpyu, 20 absdb
-    instr_num_out : out signed(5 downto 0); -- contains 0-19
+    instr_num_out : out unsigned(5 downto 0); -- contains 0-19
     -- data instruction outputs (TO RF):
     -- for li
     li_for_li : out std_logic_vector(2 downto 0);
