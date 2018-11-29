@@ -34,7 +34,7 @@ architecture behavioral of alu is
       begin
 
         if li = '1' then
-
+          
         elsif mal = '1' then
 
         elsif mah = '1' then
