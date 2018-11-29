@@ -16,7 +16,7 @@ entity alu is
     nop, bcw, and_instr, or_instr, popcnth, clz, rot, shlhi, a, sfw, ah, sfh, ahs, sfhs, mpyu, absdb : in std_logic;
 
 --  data outputs:
-    res : out std_logic_vector(4 downto 0);
+    res : out std_logic_vector(127 downto 0);
 
 --  flag outputs:
     zero : out std_logic;    

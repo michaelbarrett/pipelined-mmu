@@ -85,13 +85,14 @@ begin
     -- for li
     if (instr_num = 1) then
       li_for_li <= instr(23 downto 21);
-      imm_for_li <= instr(20 downto 5); 
+      imm_for_li <= instr(20 downto 5);
       rd_for_li <= instr(4 downto 0);
-      rs3_addr <= "00000";
-      rs2_addr <= "00000";
-      rs1_addr <= "00000";
-      rs2_addr <= "00000";
-      rs1_addr <= "00000";
+      rs3_addr <= "ZZZZZ";
+      rs2_addr <= "ZZZZZ";
+      rs1_addr <= "ZZZZZ";
+      rs2_addr <= "ZZZZZ";
+      rs1_addr <= "ZZZZZ";
+      opcode_for_r3 <= "ZZZZZZZZ";      
     -- for ma/ms/l/h
     elsif (instr_num >= 2 and instr_num <= 5) then
       li_for_li <= instr(23 downto 21);
@@ -99,10 +100,11 @@ begin
       rs2_addr <= instr(14 downto 10);
       rs1_addr <= instr(9 downto 5);
       rd_addr <= instr(4 downto 0);
+      opcode_for_r3 <= "ZZZZZZZZ";
     -- for r3 format
     else
       opcode_for_r3 <= instr(22 downto 15);
-      rs3_for_r3 <= "00000";
+      rs3_for_r3 <= "ZZZZZ";
       rs2_for_r3 <= instr(14 downto 10);
       rs1_for_r3 <= instr(9 downto 5);
       rd_for_r3 <= instr(4 downto 0);
