@@ -9,11 +9,11 @@ entity decoder is
   port(
     -- data inputs:
     instr : in std_logic_vector(24 downto 0); -- an instruction
-    -- data control outputs:
+    -- data control outputs (TO ALU):
     li : out std_logic;
     mal, mah, msl, msh : out std_logic;
     nop, bcw, and_instr, or_instr, popcnth, clz, rot, shlhi, a, sfw, ah, sfh, ahs, sfhs, mpyu, absdb : out std_logic;
-    -- data instruction outputs:
+    -- data instruction outputs (TO RF):
     -- for li
     li_for_li : out std_logic_vector(2 downto 0);
     imm_for_li : out std_logic_vector(15 downto 0);

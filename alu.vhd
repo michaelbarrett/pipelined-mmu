@@ -34,11 +34,11 @@ architecture behavioral of alu is
       begin
 
         if li = '1' then
-          
+          res <= imm;
         elsif mal = '1' then
-
+          -- multiply low 16 bit fields of each 32-bit field of regs rs3 and rs2
         elsif mah = '1' then
-
+            
         elsif msl = '1' then
 
         elsif msh = '1' then
@@ -46,11 +46,11 @@ architecture behavioral of alu is
         elsif bcw = '1' then
 
         elsif and_instr = '1' then
-
+          res <= rs1 and rs2;
         elsif or_instr = '1' then
-
+          res <= rs1 or rs2;
         elsif popcnth = '1' then
-
+          
         elsif clz = '1' then
 
         elsif rot = '1' then
@@ -58,7 +58,7 @@ architecture behavioral of alu is
         elsif shlhi = '1' then
 
         elsif a = '1' then
-
+          
         elsif sfw = '1' then
 
         elsif ah = '1' then
