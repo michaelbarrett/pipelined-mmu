@@ -1,6 +1,8 @@
 library ieee;
 use ieee.numeric_std.all;
+use STD.textio.all;
 use ieee.std_logic_1164.all;
+use work.ib_type_pkg.all;
 
 entity pmu_tb is
 end pmu_tb;
@@ -9,11 +11,11 @@ architecture behavior of pmu_tb is
 
 component load_module is
 port (
-	instrs: in array (0 to 31) of std_logic_vector(24 downto 0)	
+	INSTRS: in ib_type
   );
 end component load_module;
 
-file file_INSTRS: text;
+file file_INSTRS : text;
 file file_RESULTS : text;
 
 begin
@@ -43,7 +45,7 @@ begin
  	write(v_OLINE, w_SUM, right, c_WIDTH);
     writeline(file_RESULTS, v_OLINE);
     file_close(file_INSTRS);  
-    file_close(file_RESULTS)
+    file_close(file_RESULTS);
     wait;
   end process;
  

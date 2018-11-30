@@ -6,7 +6,7 @@ entity if_id_register is
 	clk: in std_logic;
 	rst_bar: in std_logic;
 	 instr_in: in std_logic_vector(24 downto 0);
-	 instr_out: in std_logic_vector(24 downto 0)
+	 instr_out: out std_logic_vector(24 downto 0)
 	     );
 end if_id_register;
 
@@ -17,7 +17,7 @@ begin
 process(clk, rst_bar)
 begin 
 	if rst_bar = '0' then
-		instr_out <= "00000000000000000000000";
+		instr_out <= (others=>'0');
 	elsif rising_edge(clk) then
 		instr_out <= instr_in;
 	end if;

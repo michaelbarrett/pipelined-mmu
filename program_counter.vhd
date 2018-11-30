@@ -39,7 +39,7 @@ end program_counter;
 
 architecture behavior of program_counter is	
 begin
-	process(rst_n, clk, load_en, setting, cnt_en_1)
+	PCProc : process (rst_n, clk)
 	variable count_int: integer := 0;
 	begin
 		if (rst_n = '0') then
@@ -49,7 +49,8 @@ begin
 		if rising_edge(clk) then
 			if count_int < 31 then
 				count_int := count_int + 1;
-				count <= std_logic_vector(to_unsigned(count_int, 4));
+				count <= std_logic_vector(to_unsigned(count_int, 5));
 			end if;
-	end process;
-end program_counter;
+		end if;
+	end process PCProc;
+end behavior;
