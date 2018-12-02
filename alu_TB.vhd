@@ -43,9 +43,9 @@ end process;
 stim_proc : process
 begin
 	wait for clk_period*1;
-	rs1 <= std_logic_vector(to_unsigned(3, rs1'length));
-	rs2 <= std_logic_vector(to_unsigned(6, rs2'length));
-	rs3 <= std_logic_vector(to_unsigned(9, rs3'length));
+	rs1 <= std_logic_vector(X"1111_1110_1100_1000_0001_0011_0111_1111");
+	rs2 <= std_logic_vector(X"0001_0010_0001_0011_0001_0010_0001_0011");
+	rs3 <= std_logic_vector(X"0001_0001_0001_0001_0001_0001_0001_0001");
 	imm <= std_logic_vector(to_unsigned(12, imm'length));
 	li <= std_logic_vector(to_unsigned(0, li'length));
 	rs2_for_shlhi <= std_logic_vector(to_unsigned(2, rs2_for_shlhi'length));
@@ -59,6 +59,22 @@ begin
 	instr_num <= to_unsigned(6, instr_num'length); wait for clk_period;
 	instr_num <= to_unsigned(7, instr_num'length); wait for clk_period;
 	instr_num <= to_unsigned(8, instr_num'length); wait for clk_period;
+	--popcnth
+	instr_num <= to_unsigned(9, instr_num'length); wait for clk_period;
+	--clz
+	instr_num <= to_unsigned(10, instr_num'length); wait for clk_period;
+	--rot
+	instr_num <= to_unsigned(11, instr_num'length); wait for clk_period;
+	--shlhi
+	instr_num <= to_unsigned(12, instr_num'length); wait for clk_period;
+	instr_num <= to_unsigned(13, instr_num'length); wait for clk_period;
+	instr_num <= to_unsigned(14, instr_num'length); wait for clk_period;
+	instr_num <= to_unsigned(15, instr_num'length); wait for clk_period;
+	instr_num <= to_unsigned(16, instr_num'length); wait for clk_period;
+	instr_num <= to_unsigned(17, instr_num'length); wait for clk_period;
+	instr_num <= to_unsigned(18, instr_num'length); wait for clk_period;
+	instr_num <= to_unsigned(19, instr_num'length); wait for clk_period;
+	instr_num <= to_unsigned(20, instr_num'length); wait for clk_period;
 	wait;
 end process;
 
