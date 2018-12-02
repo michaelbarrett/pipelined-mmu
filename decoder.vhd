@@ -24,6 +24,8 @@ entity decoder is
     rd_addr : out std_logic_vector(4 downto 0);
     -- for r3 format
     opcode_for_r3 : out std_logic_vector(7 downto 0)
+    -- for shlhi [r3]
+    rs2_for_shlhi : out std_logic_vector(4 downto 0);
     );
 end entity;
 
