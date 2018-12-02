@@ -10,12 +10,14 @@ entity id_exe_register is
 	rs1_in, rs2_in, rs3_in : in std_logic_vector(127 downto 0);
 	li_in : in std_logic_vector(2 downto 0);
     imm_in : in std_logic_vector(15 downto 0);	
-	control_signals_in : in unsigned(5 downto 0);
+    control_signals_in : in unsigned(5 downto 0);
+    rs2_for_shlhi_in : in std_logic_vector(4 downto 0);
 				  
 	rs1_out, rs2_out, rs3_out : out std_logic_vector(127 downto 0);
 	li_out : out std_logic_vector(2 downto 0);
     imm_out : out std_logic_vector(15 downto 0);
-	control_signals_out : out unsigned(5 downto 0)
+    control_signals_out : out unsigned(5 downto 0);
+    rs2_for_shlhi_out : out std_logic_vector(4 downto 0)
 	
 	     );
 end id_exe_register;
@@ -32,6 +34,7 @@ begin
 		rs3_out <= (others=>'0');	
 		imm_out <= (others=>'0');	
 		li_out <= (others=>'0');
+                rs2_for_shlhi_out <= (others=>'0');
 		control_signals_out <= (others=>'0');
 		
 	elsif rising_edge(clk) then
@@ -39,7 +42,8 @@ begin
 		rs2_out	<= rs2_in;
 		rs3_out <= rs3_in;
 		imm_out <= imm_in;	
-		li_out <= li_in;			  
+		li_out <= li_in;
+                rs2_for_shlhi_out <= rs2_for_shlhi_in;
 		control_signals_out <= control_signals_in;
 	end if;
 	 
