@@ -47,7 +47,7 @@ begin
 			count <= (others => '0');
 		end if;
 		if rising_edge(clk) then
-			if count_int < 31 then
+			if count_int <= 31 then
 				count_int := count_int + 1;
 				count <= std_logic_vector(to_unsigned(count_int, 5));
 			end if;

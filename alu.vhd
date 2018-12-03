@@ -14,7 +14,7 @@ entity alu is
     
 --  control inputs:
     instr_num : in unsigned(5 downto 0);
-
+	
 --  data outputs:
     res : out std_logic_vector(127 downto 0);
 
@@ -24,7 +24,6 @@ entity alu is
 end entity;
 
 architecture behavioral of alu is
-
   begin
 
 -- perform different operations to the inputs based on the opcode
@@ -97,7 +96,6 @@ architecture behavioral of alu is
       variable d_f2 : unsigned(31 downto 0);
       variable d_f3 : unsigned(31 downto 0);
       variable d_f4 : unsigned(31 downto 0);
-	 
     begin
 		
       --Load fresh values into variables at start of process cycle.
@@ -139,7 +137,8 @@ architecture behavioral of alu is
       s2_f4 := signed(rs2(127 downto 96));
 	  
       --Load a 16-bit immediate value from the [20:5] instruction field into the 16-bit field specified by the li field [23-21] of the 128-bit register rd.
-      if instr_num = 1 then -- li
+		  
+	  if instr_num = 1 then -- li
         --res <= std_logic_vector(resize(signed(imm), res'length));
         if (li = "000") then
           res <= rd(127 downto 16) & imm;
@@ -641,7 +640,7 @@ architecture behavioral of alu is
 		& abs(signed(s1_lf2) - signed(s2_lf2))
 		& abs(signed(s1_lf2) - signed(s2_lf2)) 
 		& abs(signed(s1_lf1) - signed(s2_lf1)));
-
+		
       end if;
     end process AluProc; 
       

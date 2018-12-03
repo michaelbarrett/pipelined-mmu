@@ -23,7 +23,7 @@ begin
 		rs1 => rs1,
 		rs2 => rs2,
 		rs3 => rs3,
-		rd => rd,
+		rd => rd,				   
 		res => res,
 		imm => imm,
 		li => li,
