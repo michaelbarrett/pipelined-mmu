@@ -60,53 +60,94 @@ start: process
 	wait for 40 ns;							  
 	rst_bar <= '1';
 	
+	write(v_OLINE, string'("| --DECODE & READ OPERANDS-- |"), left, 48);
+	
+	write(v_OLINE, string'("--EXECUTE & WRITE-BACK-- |"), left, 24);
+	writeline(file_RESULTS, v_OLINE);	   
+	
+	write(v_OLINE, string'("| Instr |"), left, 6);
+	
+	write(v_OLINE, string'("Opcode for Rs3 |"), left, 8);
+	
+	write(v_OLINE, string'("Rs3 address |"), left, 8);
+
+	write(v_OLINE, string'("Rs3 value:"), left, c_WIDTH);
+	hwrite(v_OLINE, r3_value_tb);	
+	writeline(file_RESULTS, v_OLINE);
+	
+	write(v_OLINE, string'("Rs2 address:"), left, c_WIDTH);
+	hwrite(v_OLINE, r2_addr_tb);	
+	writeline(file_RESULTS, v_OLINE);
+	
+	write(v_OLINE, string'("Rs2 value:"), left, c_WIDTH);
+	hwrite(v_OLINE, r2_value_tb);	
+	writeline(file_RESULTS, v_OLINE);
+	
+	write(v_OLINE, string'("Rs1 address:"), left, c_WIDTH);
+	hwrite(v_OLINE, r1_addr_tb);	
+	writeline(file_RESULTS, v_OLINE);
+	
+	write(v_OLINE, string'("Rs1 value:"), left, c_WIDTH);
+	hwrite(v_OLINE, r1_value_tb);	
+	writeline(file_RESULTS, v_OLINE);
+	
+	write(v_OLINE, string'("Rd value:"), left, c_WIDTH);
+	hwrite(v_OLINE, rd_value_tb);	
+	writeline(file_RESULTS, v_OLINE);
+	
+	write(v_OLINE, string'("Zero:"), left, c_WIDTH);
+	write(v_OLINE, zero_tb);	
+	writeline(file_RESULTS, v_OLINE);		
+	
+	writeline(file_RESULTS, v_OLINE);
+		
 	
 	for i in 0 to instr_count loop
 		wait for clk_period;
 		
-		write(v_OLINE, string'("Instr"), right, 6);
+		write(v_OLINE, string'("Instr"), left, 6);
 		write(v_OLINE, i);
 	    writeline(file_RESULTS, v_OLINE);
 		
 		write(v_OLINE, string'("--DECODE & READ OPERANDS--"));
 		writeline(file_RESULTS, v_OLINE);
 		
-		write(v_OLINE, string'("Opcode for R3:"), right, c_WIDTH);
+		write(v_OLINE, string'("Opcode for Rs3:"), left, c_WIDTH);
 		hwrite(v_OLINE, opcode_for_r3_tb);	
 		writeline(file_RESULTS, v_OLINE);
 		
-		write(v_OLINE, string'("R3 address:"), right, c_WIDTH);
+		write(v_OLINE, string'("Rs3 address:"), left, c_WIDTH);
 		hwrite(v_OLINE, r3_addr_tb);	
 		writeline(file_RESULTS, v_OLINE);
 	
-		write(v_OLINE, string'("R3 value:"), right, c_WIDTH);
+		write(v_OLINE, string'("Rs3 value:"), left, c_WIDTH);
 		hwrite(v_OLINE, r3_value_tb);	
 		writeline(file_RESULTS, v_OLINE);
 		
-		write(v_OLINE, string'("R2 address:"), right, c_WIDTH);
+		write(v_OLINE, string'("Rs2 address:"), left, c_WIDTH);
 		hwrite(v_OLINE, r2_addr_tb);	
 		writeline(file_RESULTS, v_OLINE);
 		
-		write(v_OLINE, string'("R2 value:"), right, c_WIDTH);
+		write(v_OLINE, string'("Rs2 value:"), left, c_WIDTH);
 		hwrite(v_OLINE, r2_value_tb);	
 		writeline(file_RESULTS, v_OLINE);
 		
-		write(v_OLINE, string'("R1 address:"), right, c_WIDTH);
+		write(v_OLINE, string'("Rs1 address:"), left, c_WIDTH);
 		hwrite(v_OLINE, r1_addr_tb);	
 		writeline(file_RESULTS, v_OLINE);
 		
-		write(v_OLINE, string'("R1 value:"), right, c_WIDTH);
+		write(v_OLINE, string'("Rs1 value:"), left, c_WIDTH);
 		hwrite(v_OLINE, r1_value_tb);	
 		writeline(file_RESULTS, v_OLINE);
 		
 		write(v_OLINE, string'("--EXECUTE & WRITE-BACK--"));
 		writeline(file_RESULTS, v_OLINE);	   
 		
-		write(v_OLINE, string'("Rd value:"), right, c_WIDTH);
+		write(v_OLINE, string'("Rd value:"), left, c_WIDTH);
 		hwrite(v_OLINE, rd_value_tb);	
 		writeline(file_RESULTS, v_OLINE);
 		
-		write(v_OLINE, string'("Zero:"), right, c_WIDTH);
+		write(v_OLINE, string'("Zero:"), left, c_WIDTH);
 		write(v_OLINE, zero_tb);	
 		writeline(file_RESULTS, v_OLINE);		
 		

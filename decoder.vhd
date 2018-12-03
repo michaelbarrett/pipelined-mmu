@@ -30,6 +30,11 @@ entity decoder is
 end entity;
 
 architecture conversion of decoder is	
+signal rs3_addr_temp : std_logic_vector(4 downto 0);
+signal rs2_addr_temp : std_logic_vector(4 downto 0);
+signal rs1_addr_temp : std_logic_vector(4 downto 0);
+signal rd_addr_temp : std_logic_vector(4 downto 0);
+signal opcode_for_r3_temp : std_logic_vector(7 downto 0);
 
 signal instr_num : unsigned(5 downto 0);
 
@@ -86,35 +91,36 @@ begin
     end if;
 
     -- for li
-    if (instr_num = 1) then
+    if instr(24) = '0' then
       li_for_li <= instr(23 downto 21);
       imm_for_li <= instr(20 downto 5);
-      rd_addr <= instr(4 downto 0);
-      rs3_addr <= "ZZZZZ";
-      rs2_addr <= "ZZZZZ";
-      rs1_addr <= "ZZZZZ";
-      rs2_addr <= "ZZZZZ";
-      rs1_addr <= "ZZZZZ";
-      opcode_for_r3 <= "ZZZZZZZZ"; 
+      rd_addr_temp <= instr(4 downto 0);
+      rs3_addr_temp <= "ZZZZZ";
+      rs2_addr_temp <= "ZZZZZ";
+      rs1_addr_temp <= "ZZZZZ";	
+      opcode_for_r3_temp <= "ZZZZZZZZ"; 
     -- for ma/ms/l/h
-    elsif (instr_num >= 2 and instr_num <= 5) then
+    elsif instr(24) = '1' and instr(23) = '0' then
       li_for_li <= instr(23 downto 21);
-      rs3_addr <= instr(19 downto 15);
-      rs2_addr <= instr(14 downto 10);
-      rs1_addr <= instr(9 downto 5);
-      rd_addr <= instr(4 downto 0);
-      opcode_for_r3 <= "ZZZZZZZZ";
+      rs3_addr_temp <= instr(19 downto 15);
+      rs2_addr_temp <= instr(14 downto 10);
+      rs1_addr_temp <= instr(9 downto 5);
+      rd_addr_temp <= instr(4 downto 0);
+      opcode_for_r3_temp <= "ZZZZZZZZ";
     -- for r3 format
     else
-      opcode_for_r3 <= instr(22 downto 15);
-      rs3_addr <= "ZZZZZ";
-      rs2_addr <= instr(14 downto 10);
-      rs1_addr <= instr(9 downto 5);
-      rd_addr <= instr(4 downto 0);
+      opcode_for_r3_temp <= instr(22 downto 15);
+      rs3_addr_temp <= "ZZZZZ";
+      rs2_addr_temp <= instr(14 downto 10);
+      rs1_addr_temp <= instr(9 downto 5);
+      rd_addr_temp <= instr(4 downto 0);
     end if;
 
-    instr_num_out <= instr_num;
-
   end process DecProc;
-
+  instr_num_out <= instr_num;
+  rs3_addr <= rs3_addr_temp;
+rs2_addr <= rs2_addr_temp;
+rs1_addr <= rs1_addr_temp;
+rd_addr <= rd_addr_temp;
+  opcode_for_r3 <= opcode_for_r3_temp;
 end architecture conversion;

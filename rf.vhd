@@ -11,7 +11,8 @@ entity rf is
     r_addr1 : in std_logic_vector(4 downto 0); -- 32 registers, so 5 bits addr
     r_addr2 : in std_logic_vector(4 downto 0);
     r_addr3 : in std_logic_vector(4 downto 0);
-    w_addr1 : in std_logic_vector(4 downto 0);
+    w_addr1 : in std_logic_vector(4 downto 0); 
+	w_addr1_write : in std_logic_vector(4 downto 0);
     w_data_in1 : in std_logic_vector(127 downto 0); -- 128 bits in reg
     -- outputs
     r_data_out1 : out std_logic_vector(127 downto 0); -- 128 bits in reg
@@ -29,7 +30,6 @@ architecture rtl of rf is
   signal data : data_type := (others=>(others=>'0'));
   
   -- other signals
-  signal rd_temp : std_logic_vector(4 downto 0);
   signal read_address1 : std_logic_vector(4 downto 0);
   signal read_address2 : std_logic_vector(4 downto 0);
   signal read_address3 : std_logic_vector(4 downto 0);
@@ -38,15 +38,15 @@ architecture rtl of rf is
 begin
 
   RfProc : process(r_addr1, r_addr2, r_addr3, w_addr1, w_data_in1) is
-
   begin
 	-- register write (no if statement bc always) -- use rd_temp so that it's available next cycle for wb
 	if (w_data_in1(0) /= 'U') then
-    	data(to_integer(unsigned(rd_temp))) <= w_data_in1;
-    	rd_temp <= w_addr1;
-	end if;
+    	data(to_integer(unsigned(w_addr1_write))) <= w_data_in1;
+	end if;				  
 	
 	-- register read
+
+  end process RfProc;
     read_address1 <= r_addr1;
     read_address2 <= r_addr2;
     read_address3 <= r_addr3;
@@ -56,7 +56,5 @@ begin
     r_data_out2 <= data(to_integer(unsigned(read_address2)));
     r_data_out3 <= data(to_integer(unsigned(read_address3)));
 	r_data_outd <= data(to_integer(unsigned(read_addressd)));
-
-  end process RfProc;
-
+read_addressd <= w_addr1;
 end architecture rtl;

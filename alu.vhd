@@ -96,6 +96,7 @@ architecture behavioral of alu is
       variable d_f2 : unsigned(31 downto 0);
       variable d_f3 : unsigned(31 downto 0);
       variable d_f4 : unsigned(31 downto 0);
+	  variable res_temp : std_logic_vector(127 downto 0);
     begin
 		
       --Load fresh values into variables at start of process cycle.
@@ -141,21 +142,21 @@ architecture behavioral of alu is
 	  if instr_num = 1 then -- li
         --res <= std_logic_vector(resize(signed(imm), res'length));
         if (li = "000") then
-          res <= rd(127 downto 16) & imm;
+          res_temp := rd(127 downto 16) & imm;
         elsif (li = "001") then
-          res <= rd(127 downto 32) & imm & rd(15 downto 0);
+          res_temp := rd(127 downto 32) & imm & rd(15 downto 0);
 		elsif (li = "010") then
-          res <= rd(127 downto 48) & imm & rd(31 downto 0);
+          res_temp := rd(127 downto 48) & imm & rd(31 downto 0);
 		elsif (li = "011") then
-          res <= rd(127 downto 64) & imm & rd(47 downto 0);
+          res_temp := rd(127 downto 64) & imm & rd(47 downto 0);
 		elsif (li = "100") then
-          res <= rd(127 downto 80) & imm & rd(63 downto 0);
+          res_temp := rd(127 downto 80) & imm & rd(63 downto 0);
 		elsif (li = "101") then
-          res <= rd(127 downto 96) & imm & rd(79 downto 0);
+          res_temp := rd(127 downto 96) & imm & rd(79 downto 0);
 		elsif (li = "110") then
-          res <= rd(127 downto 112) & imm & rd(95 downto 0);
+          res_temp := rd(127 downto 112) & imm & rd(95 downto 0);
 		elsif (li = "111") then
-          res <= imm & rd(111 downto 0);
+          res_temp := imm & rd(111 downto 0);
 
 		end if;
 
@@ -203,7 +204,7 @@ architecture behavioral of alu is
         s1_f3 := s1_f3 + res3;
         s1_f4 := s1_f4 + res4;
         -- output to res
-        res <= std_logic_vector(s1_f4 & s1_f3 & s1_f2 & s1_f1); --4 * 32 = 128               
+        res_temp := std_logic_vector(s1_f4 & s1_f3 & s1_f2 & s1_f1); --4 * 32 = 128               
 
       --Signed integer multiple-add high with saturation: Multiply high 16-bit-fields of each 32-bit field of registers rs3 and rs2, then add 32-bit products to 32-bit fields of register rs1, and save result in register rd.
       elsif instr_num = 3 then -- mah
@@ -249,7 +250,7 @@ architecture behavioral of alu is
         s1_f3 := s1_f3 + res3;
         s1_f4 := s1_f4 + res4;
         -- output to res
-        res <= std_logic_vector(s1_f4 & s1_f3 & s1_f2 & s1_f1);       
+        res_temp := std_logic_vector(s1_f4 & s1_f3 & s1_f2 & s1_f1);       
 
       --Signed integer multiple-subtract low with saturation: Multiply low 16-bit-fields of each 32-bit field of registers rs3 and rs2, then subtract 32-bit products from 32-bit fields of register rs1, and save result in register rd.
       elsif instr_num = 4 then -- msl
@@ -295,7 +296,7 @@ architecture behavioral of alu is
         s1_f3 := s1_f3 - res3;
         s1_f4 := s1_f4 - res4;
         -- output to res
-        res <= std_logic_vector(s1_f4 & s1_f3 & s1_f2 & s1_f1);        
+        res_temp := std_logic_vector(s1_f4 & s1_f3 & s1_f2 & s1_f1);        
 
       --Signed integer multiple-subtract high with saturation: Multiply high 16-bit-fields of each 32-bit field of registers rs3 and rs2, then subtract 32-bit products from 32-bit fields of register rs1, and save result in register rd.
       elsif instr_num = 5 then -- msh
@@ -341,7 +342,7 @@ architecture behavioral of alu is
         s1_f3 := s1_f3 - res3;
         s1_f4 := s1_f4 - res4;
         -- output to res
-        res <= std_logic_vector(s1_f4 & s1_f3 & s1_f2 & s1_f1);
+        res_temp := std_logic_vector(s1_f4 & s1_f3 & s1_f2 & s1_f1);
 
         --bcw: broadcast a ("the") right 32-bit word of register rs1 to each of the  four 32-bit words of register rd.
       elsif instr_num = 6 then -- bcw
@@ -349,15 +350,15 @@ architecture behavioral of alu is
         s1_f2 := signed(rs1(31 downto 0));
         s1_f3 := signed(rs1(31 downto 0));
         s1_f4 := signed(rs1(31 downto 0));
-        res <= std_logic_vector(s1_f4 & s1_f3 & s1_f2 & s1_f1);
+        res_temp := std_logic_vector(s1_f4 & s1_f3 & s1_f2 & s1_f1);
 
         --and: bitwise logical and
       elsif instr_num = 7 then -- and
-        res <= rs1 and rs2;
+        res_temp := rs1 and rs2;
 
         --or: bitwise logical or
       elsif instr_num = 8 then -- or
-        res <= rs1 or rs2;
+        res_temp := rs1 or rs2;
 
         --popcnth: count ones in halfwords: the number of 1s in each of the four
         --("8") halfword-slots in register rs1 is computed. If the halfword slot in register rs1 is zero, the result is 0. Each of the results is placed into corresponding 16-bit slot in register rd. (Comments: 8 separate 16-bit halfword values in each 128-bit register)
@@ -401,7 +402,7 @@ architecture behavioral of alu is
         for i in 0 to 15 loop   --for all the bits.
           d_hf4 := d_hf4 + ("000000000000000" & s1_hf4(i));  --Add the bit to the count
         end loop;
-        res <= std_logic_vector(d_hf4 & d_lf4 & d_hf3 & d_lf3 & d_hf2 & d_lf2 & d_hf1 & d_lf1);
+        res_temp := std_logic_vector(d_hf4 & d_lf4 & d_hf3 & d_lf3 & d_hf2 & d_lf2 & d_hf1 & d_lf1);
 
       -- count leading zeroes in words: for each of the two 32-bit word slots in register rs1 the number of zero bits to the left of the first non-zero bit is computed. If the word slot in register rs1 is zero, the result is 32. The two results are placed into the corresponding 32-bit word slots in register rd. (Comments: 4 separate 32-bit values in each 128-bit register)  
       elsif instr_num = 10 then -- clz
@@ -441,11 +442,11 @@ architecture behavioral of alu is
           end if;         
         end loop;
 
-        res <= std_logic_vector(d_f4 & d_f3 & d_f2 & d_f1);
+        res_temp := std_logic_vector(d_f4 & d_f3 & d_f2 & d_f1);
 
       --rotate right: the contents of register rs1 are rotated to the right according to the count in the 7 least significant bits (6 to 0) of the contents of register rs2. The result is placed in register rd. If the count is zero, the contents of register rs1 are copied unchanged into register rd. Bits rotated out of the right end of the 128-bit contents of register rs1 are rotated in at the left end.
       elsif instr_num = 11 then -- rot
-        res <= std_logic_vector(rotate_right(unsigned(rs1), to_integer(unsigned(rs2(6 downto 0)))));
+        res_temp := std_logic_vector(rotate_right(unsigned(rs1), to_integer(unsigned(rs2(6 downto 0)))));
 
       --shift left halfword immediate: packed 16-bit halfword shift left logical of the contents of register rs1 by the 4-bit immediate value of instruction field rs2. Each of the results is placed into the corresponding 16-bit slot in register rd. (Comments: 8 separate 16-bit values in each 128-bit register)
       elsif instr_num = 12 then -- shlhi
@@ -453,35 +454,36 @@ architecture behavioral of alu is
         -- by 4-bit value of rs2_for_shlhi
         -- and placed in res->rd
         
-		res <= std_logic_vector(shift_left(unsigned(s1_hf4), to_integer(unsigned(rs2_for_shlhi))) 
+		res_temp := std_logic_vector(shift_left(unsigned(s1_hf4), to_integer(unsigned(rs2_for_shlhi))) 
 		& shift_left(unsigned(s1_lf4), to_integer(unsigned(rs2_for_shlhi))) 
 		& shift_left(unsigned(s1_hf3), to_integer(unsigned(rs2_for_shlhi))) 
 		& shift_left(unsigned(s1_lf3), to_integer(unsigned(rs2_for_shlhi))) 
 		& shift_left(unsigned(s1_hf2), to_integer(unsigned(rs2_for_shlhi))) 
 		& shift_left(unsigned(s1_lf2), to_integer(unsigned(rs2_for_shlhi))) 
 		& shift_left(unsigned(s1_hf1), to_integer(unsigned(rs2_for_shlhi))) 
-		& shift_left(unsigned(s1_lf1), to_integer(unsigned(rs2_for_shlhi))));
+		& shift_left(unsigned(s1_lf1), to_integer(unsigned(rs2_for_shlhi))));	
+		
         
       -- add word: packed 32-bit unsigned add of the contents of registers rs1 and rs2 (Comments: 4 separate 32-bit values in each 128-bit register)
       elsif instr_num = 13 then -- a
-        res <= std_logic_vector(((unsigned(s1_f4) + unsigned(s2_f4)) & (unsigned(s1_f3) + unsigned(s2_f3)) 
+        res_temp := std_logic_vector(((unsigned(s1_f4) + unsigned(s2_f4)) & (unsigned(s1_f3) + unsigned(s2_f3)) 
 		& (unsigned(s1_f2) + unsigned(s2_f2)) & (unsigned(s1_f1) + unsigned(s2_f1))));
 
       -- subtract from word: (packed) 32-bit unsigned subtract of the contents of registers rs1 and rs2 (Comments: 4 separate 32-bit values in each 128-bit register)
       elsif instr_num = 14 then -- sfw
-        res <= std_logic_vector(((unsigned(s1_f4) - unsigned(s2_f4)) & (unsigned(s1_f3) - unsigned(s2_f3)) 
+        res_temp := std_logic_vector(((unsigned(s1_f4) - unsigned(s2_f4)) & (unsigned(s1_f3) - unsigned(s2_f3)) 
 		& (unsigned(s1_f2) - unsigned(s2_f2)) & (unsigned(s1_f1) - unsigned(s2_f1))));
 
       -- add halfword : (packed) (16-bit) halfword unsigned add of the contents of registers rs1 and rs2 (Comments: 8 separate 16-bit values in each128-bit register)
       elsif instr_num = 15 then -- ah
-        res <= std_logic_vector(((unsigned(s1_hf4) + unsigned(s2_hf4)) & (unsigned(s1_lf4) + unsigned(s2_lf4)) 
+        res_temp := std_logic_vector(((unsigned(s1_hf4) + unsigned(s2_hf4)) & (unsigned(s1_lf4) + unsigned(s2_lf4)) 
 		& (unsigned(s1_hf3) + unsigned(s2_hf3)) & (unsigned(s1_lf3) + unsigned(s2_lf3)) 
 		& (unsigned(s1_hf2) + unsigned(s2_hf2)) & (unsigned(s1_lf2) + unsigned(s2_lf2)) 
 		& (unsigned(s1_hf1) + unsigned(s2_hf1)) & (unsigned(s1_lf1) + unsigned(s2_lf1))));
 
       -- subtract from halfword: (packed) (16-bit) halfword unsigned subtract of the contents of registers rs1 and rs2. (Comments: 8 separate 16-bit values in each128-bit register)
       elsif instr_num = 16 then -- sfh
-        res <= std_logic_vector(((unsigned(s1_hf4) - unsigned(s2_hf4)) & (unsigned(s1_lf4) - unsigned(s2_lf4)) 
+        res_temp := std_logic_vector(((unsigned(s1_hf4) - unsigned(s2_hf4)) & (unsigned(s1_lf4) - unsigned(s2_lf4)) 
 		& (unsigned(s1_hf3) - unsigned(s2_hf3)) & (unsigned(s1_lf3) - unsigned(s2_lf3)) 
 		& (unsigned(s1_hf2) - unsigned(s2_hf2)) & (unsigned(s1_lf2) - unsigned(s2_lf2)) 
 		& (unsigned(s1_hf1) - unsigned(s2_hf1)) & (unsigned(s1_lf1) - unsigned(s2_lf1))));
@@ -553,7 +555,7 @@ architecture behavioral of alu is
           res_hf4 := to_signed(2**15 - 1, res_hf4'length);
         end if;
 
-        res <= std_logic_vector(res_hf4 & res_lf4 & res_hf3 & res_lf3 & res_hf2 & res_lf2 & res_hf1 & res_lf1);
+        res_temp := std_logic_vector(res_hf4 & res_lf4 & res_hf3 & res_lf3 & res_hf2 & res_lf2 & res_hf1 & res_lf1);
 
       -- subtract from halfword saturated: (packed) (16-bit) signed subtract with saturation of the contents of registers rs1 and rs2. (Comments: 8 separate 16-bit values in each128-bit register)
       elsif instr_num = 18 then -- sfhs
@@ -622,16 +624,16 @@ architecture behavioral of alu is
           res_hf4 := to_signed(2**15 - 1, res_hf4'length);
         end if;
 
-        res <= std_logic_vector(res_hf4 & res_lf4 & res_hf3 & res_lf3 & res_hf2 & res_lf2 & res_hf1 & res_lf1);
+        res_temp := std_logic_vector(res_hf4 & res_lf4 & res_hf3 & res_lf3 & res_hf2 & res_lf2 & res_hf1 & res_lf1);
 
       -- multiply unsigned: the 16 rightmost bits of each of the four 32-bit slots in registers rs1 are multiplied by the 16 rightmost bits of the corresponding 32-bit slots in register rs2, treating both operands as unsigned. The four 32-bit products are placed into the corresponding slots of register rd. (Comments: 4 separate 32-bit values in each 128-bit register)
       elsif instr_num = 19 then -- mpyu
-        res <= std_logic_vector((unsigned(s1_lf4) * unsigned(s2_lf4)) & (unsigned(s1_lf3) * unsigned(s2_lf3)) 
+        res_temp := std_logic_vector((unsigned(s1_lf4) * unsigned(s2_lf4)) & (unsigned(s1_lf3) * unsigned(s2_lf3)) 
 		& (unsigned(s1_lf2) * unsigned(s2_lf2)) & (unsigned(s1_lf1) * unsigned(s2_lf1)));
 
       -- absolute difference of bytes: the contents of each of the 16 byte slots in register rs2 is subtracted from the contents of the corresponding byte slot in register rs1. The absolute value of each of the results is placed into the corresponding byte slot in register rd. (Comments: 16 separate 8-bit values in each 128-bit register)
       elsif instr_num = 20 then -- absdb
-        res <= std_logic_vector(
+        res_temp := std_logic_vector(
 		  abs(signed(s1_hf4) - signed(s2_hf4)) 
 		& abs(signed(s1_lf4) - signed(s2_lf4))
 		& abs(signed(s1_hf3) - signed(s2_hf3)) 
@@ -642,6 +644,6 @@ architecture behavioral of alu is
 		& abs(signed(s1_lf1) - signed(s2_lf1)));
 		
       end if;
+	  res <= res_temp;
     end process AluProc; 
-      
     end architecture behavioral;
