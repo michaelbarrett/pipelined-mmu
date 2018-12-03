@@ -119,13 +119,13 @@ architecture behavioral of alu is
       s3_hf4 := signed(rs3(127 downto 112));
       --halfword slots of rs1
       s1_lf1 := signed(rs1(15 downto 0));
-      s1_hf1 := signed(rs2(31 downto 16));
+      s1_hf1 := signed(rs1(31 downto 16));
       s1_lf2 := signed(rs1(47 downto 32));
-      s1_hf2 := signed(rs2(63 downto 48));
+      s1_hf2 := signed(rs1(63 downto 48));
       s1_lf3 := signed(rs1(79 downto 64));
-      s1_hf3 := signed(rs2(95 downto 80));
+      s1_hf3 := signed(rs1(95 downto 80));
       s1_lf4 := signed(rs1(111 downto 96));
-      s1_hf4 := signed(rs2(127 downto 112));
+      s1_hf4 := signed(rs1(127 downto 112));
 	  --fields of rs1 and rs2
 	  s1_f1 := signed(rs1(31 downto 0));
       s1_f2 := signed(rs1(63 downto 32));
