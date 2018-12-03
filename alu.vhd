@@ -7,7 +7,7 @@ use IEEE.numeric_std.all;
 entity alu is
   port(
 --  data inputs:
-    rs1, rs2, rs3 : in std_logic_vector(127 downto 0);
+    rs1, rs2, rs3, rd : in std_logic_vector(127 downto 0);
     imm : in std_logic_vector(15 downto 0);
     li : in std_logic_vector(2 downto 0);
     rs2_for_shlhi : in std_logic_vector(4 downto 0);
@@ -29,10 +29,11 @@ architecture behavioral of alu is
 
 -- perform different operations to the inputs based on the opcode
 
-    AluProc : process(rs1, rs2, rs3, imm, li, rs2_for_shlhi, instr_num) is
+    AluProc : process(rs1, rs2, rs3, imm, li, rs2_for_shlhi, rd, instr_num) is
 
 	--vars for signed instrs
       -------these are refreshed each cycle-------
+	  variable d1_lf1 : signed(15 downto 0);
       --low fields
       variable s2_lf1 : signed(15 downto 0);
       variable s2_lf2 : signed(15 downto 0);
@@ -141,21 +142,21 @@ architecture behavioral of alu is
       if instr_num = 1 then -- li
         --res <= std_logic_vector(resize(signed(imm), res'length));
         if (li = "000") then
-          res <= std_logic_vector(X"0000000000000000000000000000") & imm;
+          res <= rd(127 downto 16) & imm;
         elsif (li = "001") then
-          res <= std_logic_vector(X"000000000000000000000000") & imm & std_logic_vector(X"0000");
+          res <= rd(127 downto 32) & imm & rd(15 downto 0);
 		elsif (li = "010") then
-          res <= std_logic_vector(X"00000000000000000000") & imm & std_logic_vector(X"00000000");
+          res <= rd(127 downto 48) & imm & rd(31 downto 0);
 		elsif (li = "011") then
-          res <= std_logic_vector(X"0000000000000000") & imm & std_logic_vector(X"000000000000");
+          res <= rd(127 downto 64) & imm & rd(47 downto 0);
 		elsif (li = "100") then
-          res <= std_logic_vector(X"000000000000") & imm & std_logic_vector(X"0000000000000000");
+          res <= rd(127 downto 80) & imm & rd(63 downto 0);
 		elsif (li = "101") then
-          res <= std_logic_vector(X"00000000") & imm & std_logic_vector(X"00000000000000000000");
+          res <= rd(127 downto 96) & imm & rd(79 downto 0);
 		elsif (li = "110") then
-          res <= std_logic_vector(X"0000") & imm & std_logic_vector(X"000000000000000000000000");
+          res <= rd(127 downto 112) & imm & rd(95 downto 0);
 		elsif (li = "111") then
-          res <= imm & std_logic_vector(X"0000000000000000000000000000");
+          res <= imm & rd(111 downto 0);
 
 		end if;
 

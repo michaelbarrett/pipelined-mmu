@@ -8,7 +8,7 @@ end alu_TB;
 architecture alu_TB of alu_TB is
 
 signal clk : std_logic := '0';
-signal rs1, rs2, rs3 : std_logic_vector(127 downto 0);
+signal rs1, rs2, rs3, rd : std_logic_vector(127 downto 0);
 signal res : std_logic_vector(127 downto 0);
 signal imm : std_logic_vector(15 downto 0);
 signal li : std_logic_vector(2 downto 0);
@@ -23,6 +23,7 @@ begin
 		rs1 => rs1,
 		rs2 => rs2,
 		rs3 => rs3,
+		rd => rd,
 		res => res,
 		imm => imm,
 		li => li,

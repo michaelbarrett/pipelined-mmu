@@ -16,7 +16,8 @@ entity rf is
     -- outputs
     r_data_out1 : out std_logic_vector(127 downto 0); -- 128 bits in reg
     r_data_out2 : out std_logic_vector(127 downto 0);
-    r_data_out3 : out std_logic_vector(127 downto 0)
+    r_data_out3 : out std_logic_vector(127 downto 0);
+	r_data_outd : out std_logic_vector(127 downto 0)
     );
 end entity;
 
@@ -32,6 +33,7 @@ architecture rtl of rf is
   signal read_address1 : std_logic_vector(4 downto 0);
   signal read_address2 : std_logic_vector(4 downto 0);
   signal read_address3 : std_logic_vector(4 downto 0);
+  signal read_addressd : std_logic_vector(4 downto 0);
 
 begin
 
@@ -47,10 +49,12 @@ begin
     read_address1 <= r_addr1;
     read_address2 <= r_addr2;
     read_address3 <= r_addr3;
+	read_addressd <= w_addr1;
 
     r_data_out1 <= data(to_integer(unsigned(read_address1)));
     r_data_out2 <= data(to_integer(unsigned(read_address2)));
-    r_data_out3 <= data(to_integer(unsigned(read_address3)));  
+    r_data_out3 <= data(to_integer(unsigned(read_address3)));
+	r_data_outd <= data(to_integer(unsigned(read_addressd)));
 
   end process RfProc;
 
