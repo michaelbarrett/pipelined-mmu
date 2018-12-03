@@ -41,9 +41,10 @@ begin
 
   begin
 	-- register write (no if statement bc always) -- use rd_temp so that it's available next cycle for wb
-    data(to_integer(unsigned(rd_temp))) <= w_data_in1;
-
-    rd_temp <= w_addr1;
+	if (w_data_in1(0) /= 'U') then
+    	data(to_integer(unsigned(rd_temp))) <= w_data_in1;
+    	rd_temp <= w_addr1;
+	end if;
 	
 	-- register read
     read_address1 <= r_addr1;
