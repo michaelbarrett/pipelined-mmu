@@ -38,7 +38,7 @@ signal read_address : std_logic_vector(4 downto 0); -- 32 instrs
 	  -- array holds 32 25-bit instructions
       --type data_type is array (0 to 31) of std_logic_vector(24 downto 0);
       
-      data <= (0 => B"1010_1010_1010_1010_1010_10101", 1 => B"1010010101010101010101010", others => B"0000000000000000000000000");
+      --data <= (0 => B"1010_1010_1010_1010_1010_10101", 1 => B"1010010101010101010101010", others => B"0000000000000000000000000");
 	
 		
       if load_mode = '0' then
